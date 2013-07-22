@@ -1,6 +1,19 @@
 #!/bin/sh
 
 GHOSTDIR=$1 ; shift
+
+if ! [[ -d "$GHOSTDIR" ]] ; then
+  echo "$(basename $0): $GHOSTDIR: No such file or directory" >&2
+  exit 2
+elif ! [[ -p "$GHOSTDIR"/view ]] || ! [[ -f "$GHOSTDIR"/meta.yml ]]; then
+  echo "$(basename $0): $GHOSTDIR: Invalid directory" >&2
+  exit 1
+elif [[ -e "$GHOSTDIR"/pid ]] ; then
+  echo "$(basename $0): $GHOSTDIR: already in use" >&2
+  exit 1
+fi
+
+echo $$ >> "$GHOSTDIR"/pid
 eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{meta[k]}"}.join("\n")' "$GHOSTDIR"/meta.yml)
 
 while [[ -e $GHOSTDIR/view ]] ; do
@@ -9,7 +22,7 @@ while [[ -e $GHOSTDIR/view ]] ; do
 done &
 
 TRACKERPID=$!
-trap "kill $TRACKERPID ; exit 1" 1 2 3 9 15
+trap "kill $TRACKERPID ; rm $GHOSTDIR/pid ; exit 1" 1 2 3 9 15
 
 while [[ -e $GHOSTDIR/view ]] ; do
   view=$(cat "$GHOSTDIR"/view)
@@ -17,3 +30,4 @@ while [[ -e $GHOSTDIR/view ]] ; do
 done
 
 kill $TRACKERPID
+rm "$GHOSTDIR"/pid
