@@ -1,0 +1,19 @@
+#!/bin/sh
+
+GHOSTDIR=$1 ; shift
+eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{meta[k]}"}.join("\n")' "$GHOSTDIR"/meta.yml)
+
+while [[ -e $GHOSTDIR/view ]] ; do
+  printf "" >> $GHOSTDIR/view
+  sleep 1
+done &
+
+TRACKERPID=$!
+trap "kill $TRACKERPID ; exit 1" 1 2 3 9 15
+
+while [[ -e $GHOSTDIR/view ]] ; do
+  view=$(cat "$GHOSTDIR"/view)
+  printf '\e[s\e[0;0f\e[%dB\e[%dC%s\e[u' "$x" "$y" "$view"
+done
+
+kill $TRACKERPID
