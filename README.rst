@@ -12,7 +12,7 @@ Examples
 
   ghost.new watch
   ghost.open watch &
-  while true ; do  printf "\e[30;47m%s\e[0m" "$(date)" > watch/view ; done &
+  while true ; do  printf "\e[30;47m%s\e[0m" "$(date)" > watch/view ; sleep 0.75; done &
   ghost.close watch
 
 **SAM**
