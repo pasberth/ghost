@@ -36,7 +36,7 @@ while [[ -e $GHOSTDIR/view ]] ; do
   trap "kill '$display_pid' ; rm '$GHOSTDIR/pid' ; exit 1" 1 2 3 9 15
 
   view=$(cat "$GHOSTDIR"/view)
-  kill "$display_pid"
+  kill "$display_pid" > /dev/null 2>&1
 done
 
 rm "$GHOSTDIR"/pid
