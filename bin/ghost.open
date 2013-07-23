@@ -12,9 +12,23 @@ fi
 echo $$ >> "$GHOSTDIR"/pid
 eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{meta[k]}"}.join("\n")' "$GHOSTDIR"/meta.yml)
 
+FMT='\e[s\e[0;0f'
+
+if [[ $x -gt 0 ]] ; then
+  FMT+="\e[${x}B"
+fi
+
+if [[ $y -gt 0 ]] ; then
+  FMT+="\e[${y}C"
+fi
+
+FMT+='%s\e[u'
+
+PRINTCMD="printf '$FMT'"
+
 while [[ -e $GHOSTDIR/view ]] ; do
   ( for i in `seq 10000` ; do
-      printf '\e[s\e[0;0f\e[%dB\e[%dC%s\e[u' "$x" "$y" "${view}"
+      eval $PRINTCMD \'"$view"\'
       sleep 0.0001
     done ; printf "$view" >> $GHOSTDIR/view ) &
   display_pid=$!
