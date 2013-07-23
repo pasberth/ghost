@@ -13,3 +13,4 @@ elif ! [[ -e "$GHOSTDIR"/pid ]] ; then
 fi
 
 kill $(cat "$GHOSTDIR"/pid)
+echo > "$GHOSTDIR"/view

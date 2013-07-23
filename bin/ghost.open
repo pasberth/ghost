@@ -17,17 +17,16 @@ echo $$ >> "$GHOSTDIR"/pid
 eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{meta[k]}"}.join("\n")' "$GHOSTDIR"/meta.yml)
 
 while [[ -e $GHOSTDIR/view ]] ; do
-  printf "" >> $GHOSTDIR/view
-  sleep 1
-done &
+  ( for i in `seq 10000` ; do
+      printf '\e[s\e[0;0f\e[%dB\e[%dC%s\e[u' "$x" "$y" "${view}"
+      sleep 0.0001
+    done ; printf "$view" >> $GHOSTDIR/view ) &
+  display_pid=$!
 
-TRACKERPID=$!
-trap "kill $TRACKERPID ; rm $GHOSTDIR/pid ; exit 1" 1 2 3 9 15
+  trap "kill '$display_pid' ; rm '$GHOSTDIR/pid' ; exit 1" 1 2 3 9 15
 
-while [[ -e $GHOSTDIR/view ]] ; do
   view=$(cat "$GHOSTDIR"/view)
-  printf '\e[s\e[0;0f\e[%dB\e[%dC%s\e[u' "$x" "$y" "$view"
+  kill "$display_pid"
 done
 
-kill $TRACKERPID
 rm "$GHOSTDIR"/pid
