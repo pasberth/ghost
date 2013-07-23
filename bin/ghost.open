@@ -26,8 +26,13 @@ FMT+='%s\e[u'
 
 PRINTCMD="printf '$FMT'"
 
+function is_interact_now () {
+  ps -av | grep "$PPID" | grep '+' > /dev/null 2>&1
+}
+
 while [[ -e $GHOSTDIR/view ]] ; do
   ( for i in `seq 10000` ; do
+      while ! is_interact_now ; do sleep 0.0001 ; done
       eval $PRINTCMD \'"$view"\'
       sleep 0.0001
     done ; printf "$view" >> $GHOSTDIR/view ) &
