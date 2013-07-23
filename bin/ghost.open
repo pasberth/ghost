@@ -15,11 +15,11 @@ eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{me
 FMT='\e[s\e[0;0f'
 
 if [[ $x -gt 0 ]] ; then
-  FMT+="\e[${x}B"
+  FMT+="\e[${x}C"
 fi
 
 if [[ $y -gt 0 ]] ; then
-  FMT+="\e[${y}C"
+  FMT+="\e[${y}B"
 fi
 
 FMT+='%s\e[u'
