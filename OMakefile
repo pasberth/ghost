@@ -1,0 +1,8 @@
+BIN=./bin
+
+.DEFAULT:
+	mkdir -p $(BIN) 
+	install ./src/ghost.new.sh $(BIN)/ghost.new
+	install ./src/ghost.exists.sh $(BIN)/ghost.exists
+	install ./src/ghost.open.sh $(BIN)/ghost.open
+	install ./src/ghost.close.sh $(BIN)/ghost.close
