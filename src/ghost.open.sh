@@ -31,11 +31,11 @@ function is_interact_now () {
 }
 
 while [[ -e $GHOSTDIR/view ]] ; do
-  ( for i in `seq 10000` ; do
+  ( while true ; do
       while ! is_interact_now ; do sleep 0.0001 ; done
       eval $PRINTCMD \'"$view"\'
       sleep 0.0001
-    done ; printf "$view" >> $GHOSTDIR/view ) &
+    done ) &
   display_pid=$!
 
   trap "kill '$display_pid' ; rm '$GHOSTDIR/pid' ; exit 1" 1 2 3 9 15
