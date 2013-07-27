@@ -12,7 +12,7 @@ fi
 echo $$ >> "$GHOSTDIR"/pid
 eval $(ruby -ryaml -e 'meta = YAML.load($<.read); puts %w(x y).map{|k|"#{k}=#{meta[k]}"}.join("\n")' "$GHOSTDIR"/meta.yml)
 
-FMT='\e[s\e[0;0f'
+FMT='\e[0;0f'
 
 if [[ $x -gt 0 ]] ; then
   FMT+="\e[${x}C"
@@ -22,7 +22,7 @@ if [[ $y -gt 0 ]] ; then
   FMT+="\e[${y}B"
 fi
 
-FMT+='%s\e[u'
+FMT+='%s'
 
 PRINTCMD="printf '$FMT'"
 
